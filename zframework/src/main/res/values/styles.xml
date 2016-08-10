@@ -1,0 +1,43 @@
+<resources>
+
+    <!--
+        Base application theme, dependent on API level. This theme is replaced
+        by AppBaseTheme from res/values-vXX/styles.xml on newer devices.
+    -->
+    <style name="AppBaseTheme" parent="android:Theme.Light">
+        <!--
+            Theme customizations available in newer API levels can go in
+            res/values-vXX/styles.xml, while customizations related to
+            backward-compatibility can go here.
+        -->
+    </style>
+
+    <!-- Application theme. -->
+    <style name="AppTheme" parent="AppBaseTheme">
+        <!-- All customizations that are NOT specific to a particular API-level can go here. -->
+    </style>
+
+    <style name="menuDialog" parent="@android:Theme.Dialog">
+        <item name="android:windowFrame">@null</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowBackground">@color/transparent</item>
+        <item name="android:windowIsFloating">true</item>
+        <item name="android:windowContentOverlay">@null</item>
+    </style>
+
+    <style name="round_bottom_btn_left_bg" parent="@android:style/Widget.Button">
+        <item name="android:background">@drawable/round_bottom_btn_left_bg_selector</item>
+    </style>
+
+    <style name="round_bottom_btn_right_bg" parent="@android:style/Widget.Button">
+        <item name="android:background">@drawable/round_bottom_btn_right_bg_selector</item>
+    </style>
+
+    <style name="AnimationAppUp">
+        <item name="android:activityOpenEnterAnimation">@anim/push_up_in</item>
+        <item name="android:activityOpenExitAnimation">@anim/push_down_out_hide</item>
+        <item name="android:activityCloseEnterAnimation">@anim/push_up_in_show</item>
+        <item name="android:activityCloseExitAnimation">@anim/push_down_out</item>
+    </style>
+
+</resources>

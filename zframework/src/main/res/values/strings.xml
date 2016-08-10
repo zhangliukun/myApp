@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">XFrameWork</string>
+    
+    <string name="ui_loading_more">正在努力获取中...</string>
+    <string name="ui_loading_complete">已全部获取</string>
+    <string name="ui_loading_none">暂无可用数据</string>
+    <string name="ui_load_more">向上轻拉获取更多</string>
+    <string name="no_data">无数据</string>
+    <string name="mac_signature_secret_key">iCuJqQeXomh9</string>
+<!-- 
+    <string name="deny_perm_read_phone_state">读取通话状态权限被禁止，拨打电话无法自动暂停播放，可在设置中重新授权</string>
+    <string name="deny_perm_sdcard">写入SD卡权限被禁止，下载内容无法存储在SD卡，可在设置中重新授权</string>
+    <string name="deny_perm_sdcard_and_read_phone_state">读取通话状态、写入SD卡权限被禁止，拨打电话无法自动暂停播放以及下载内容无法存储在SD卡，可在设置中重新授权</string> -->
+    <string name="deny_perm_read_phone_state">读取通话状态权限被禁止，拨打电话无法自动暂停播放</string>
+    <string name="deny_perm_sdcard">写入SD卡权限被禁止，下载内容无法存储在SD卡</string>
+    <string name="deny_perm_record">录音权限被禁止</string>
+    <string name="deny_perm_bluntooth">蓝牙权限被禁止</string>
+    <string name="deny_perm_lastcontent">可在设置中重新授权</string>
+    <string name="deny_perm_read_contacts">读取联系人权限被禁止</string>
+    
+    <string name="login_collect_more">注册登录后可收藏更多，并同步到云端</string>
+    <string name="login">登录</string>
+    
+</resources>

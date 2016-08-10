@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<resources>
+    
+    <item type="id" name="tag_first"></item>
+    <item type="id" name="tag_second"></item>
+    <item type="id" name="tag_third"></item>
+    <item type="id" name="float_view"/>
+    <item type="id" name="pulldown_widget"/>
+    <item type="id" name="content"/>
+    
+    <!-- 默认图显示在src -->
+    <item name="default_in_src" type="id"/>
+    <item name="default_img" type="id"/>
+    <item name="img_recover_mark" type="id"/>
+    <!-- 图片载入是否使用动画 -->
+    <item name="img_load_istran" type="id"/>
+    <!-- 是否模糊图片显示 -->
+    <item name="blur_image" type="id"/>
+    <!-- 上一张模糊图片 -->
+    <item name="last_blur_image" type="id"/>
+    <item name="used_for_package_name_retrieval" type="id"/>
+    
+    <item type="id" name="blur_lightness"/>
+    <item type="id" name="root_view_slide"/>
+    
+    <item type="id" name="view_holder_position"/>
+    <item type="id" name="view_holder_data"/>
+    <item type="id" name="view_holder"/>
+    
+    <!-- listView仿IOS分割线id -->
+    <item type="id" name="border"></item>
+	<item type="id" name="xdcs_id"/>
+</resources>
