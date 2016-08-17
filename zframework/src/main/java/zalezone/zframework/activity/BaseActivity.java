@@ -26,7 +26,7 @@ public abstract class BaseActivity extends Activity {
         } else {
             this.mSavedState = savedState;
         }
-    };
+    }
 
     public void setActivityFullScreen() {
 		/* set it to be no title */

@@ -1,0 +1,32 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/main_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" 
+    android:background="@color/bg_color">
+
+
+    <RelativeLayout
+        android:id="@+id/fragment_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+    </RelativeLayout>
+
+
+    <FrameLayout
+        android:id="@+id/fragment_full"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+
+    <FrameLayout
+        android:id="@+id/fra_terminate_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+    <!-- 锁屏界面，需要在所有界面之上 -->
+
+    <FrameLayout
+        android:id="@+id/lock_screen"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+</RelativeLayout>

@@ -1,26 +1,20 @@
 package zalezone.zframework.fragment;
 
 import android.app.Activity;
-import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.text.TextUtils;
+import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
-import android.widget.Toast;
 
 import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Map;
 import java.util.Set;
 
-import zalezone.zframework.BaseApplication;
-import zalezone.zframework.R;
 import zalezone.zframework.activity.BaseFragmentActivity;
 
 /**
@@ -34,43 +28,63 @@ public abstract class BaseFragment extends Fragment{
     private View mNoContentView;
 
     private Set<ImageView> mImageViewList = new HashSet<ImageView>();
-    protected Context mContext;
+    //protected Context mContext;
 
-    protected Activity mActivity;
+    protected BaseFragmentActivity mActivity;
     private RelativeLayout.LayoutParams lp;
     private LoadCompleteType loadCompleteType;
 
-    public BaseFragment() {
-        super();
-        mContext = BaseApplication.getMyApplicationContext();
-    }
+    private int mContainerId;   // 该Fragment所处的Container的id
+    private boolean mIsRoot;
+    private boolean mIsHidden = true;//记录fragment的hide和show的状态
+    private InputMethodManager mIMM;
+    private boolean mNeedHideSoft;//隐藏软键盘
+
+    private FraManager mFraManager;
+
+    protected abstract void initUi(Bundle savedInstanceState);
+
+    protected abstract void loadData();
+
 
     @Override
     public void onResume() {
-        if(isAdded()){
             super.onResume();
-            restoreImageViewBitmap();
-        }
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        recycleImageViewBitmap();
     }
 
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-        mActivity = activity;
+        mActivity = (BaseFragmentActivity) activity;
+        mFraManager = mActivity.getFraManager();
     }
 
-//    public void checkPermission(Map<String, Integer> permissions) {
-//        if(getActivity()!=null && getActivity() instanceof BaseFragmentActivity)
-//            ((BaseFragmentActivity)getActivity()).checkPermission(permissions);
-//    }
-
     public boolean isViewContained = false;
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        Bundle bundle = getArguments();
+        if (bundle !=null){
+            mIsRoot = bundle.getBoolean(FraManager.ARG_IS_ROOT,false);
+            mContainerId = bundle.getInt(FraManager.FRAGMENTATION_ARG_CONTAINER);
+        }
+
+        if (savedInstanceState == null){
+
+        }else {
+            mIsHidden = savedInstanceState.getBoolean(FraManager.FRAGMENTATION_STATE_SAVE_IS_HIDDEN);
+        }
+        //内存重启解决fragment重叠问题
+        processRestoreInstanceState(savedInstanceState);
+
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -107,12 +121,35 @@ public abstract class BaseFragment extends Fragment{
         return mContainerView;
     }
 
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        initUi(savedInstanceState);
+        loadData();
+
+    }
+
     protected abstract View getLoadingView();
 
     protected abstract View getNetworkErrorView();
 
     protected abstract View getNoContentView();
 
+
+    public int getContainerId() {
+        return mContainerId;
+    }
+
+    public View findViewById(int id){
+        View view = null;
+        if (mContainerView!=null){
+            view = mContainerView.findViewById(id);
+        }else {
+            view = getActivity().findViewById(id);
+        }
+        return view;
+    }
 
     /**
      * 获取item布局文件id
@@ -121,108 +158,54 @@ public abstract class BaseFragment extends Fragment{
      */
     public abstract int getContainerLayoutId();
 
+    public void loadRootFragment(int containerId, BaseFragment toFragment) {
+        mFraManager.loadRootTransaction(getChildFragmentManager(), containerId, toFragment);
+    }
 
-    /**
-     * 重新获取ImageView
-     */
-    public void restoreImageViewBitmap() {
+    public void pop(){
+        mFraManager.back(getFragmentManager());
+    }
 
-        Iterator<ImageView> iterator = mImageViewList.iterator();
+    public void popChild(){
+        mFraManager.back(getChildFragmentManager());
+    }
 
-        while (iterator.hasNext()){
-            ImageView img = iterator.next();
-            if(img.getWindowToken() != null) {
-                //说明该view还在布局上面
-//                String url = (String) img.getTag(R.id.tag_first);
-//                int drawableId = (Integer) img.getTag(R.id.tag_second);
-//                ImageManager.from(getActivity()).displayImage(img, url, drawableId);
-//                Object thirdTag = img.getTag(R.id.tag_third);
-//                if(thirdTag!=null){
-//                    img.setBackgroundResource((Integer)thirdTag);
-//                }
-            }else{
-                //view已经不在布局上面直接扔去
-                iterator.remove();
+    public void replaceLoadRootFragment(int containerId, BaseFragment toFragment, boolean addToBack){
+        mFraManager.replaceTransaction(getChildFragmentManager(),containerId,toFragment,addToBack);
+    }
+
+    public void showHideFragment(BaseFragment showFragment, BaseFragment hideFragment) {
+        mFraManager.showHideFragment(getChildFragmentManager(), showFragment, hideFragment);
+    }
+    public void start(BaseFragment toFragment) {
+        mFraManager.dispatchStartTransaction(getFragmentManager(),getTopFragment(),toFragment,FraManager.TYPE_ADD,null);
+    }
+
+    public BaseFragment getTopFragment() {
+        return mFraManager.getTopFragment(getFragmentManager());
+    }
+
+    public <T extends BaseFragment> T findFragment(Class<T> fragmentClass){
+        return mFraManager.findStackFragment(fragmentClass,getFragmentManager());
+    }
+
+
+    private void processRestoreInstanceState(Bundle savedInstanceState) {
+        if (savedInstanceState != null) {
+            FragmentTransaction ft = getFragmentManager().beginTransaction();
+            if (isMyHidden()) {
+                ft.hide(this);
+            } else {
+                ft.show(this);
             }
-        }
-
-    }
-
-    /**
-     * 回收
-     */
-    public void recycleImageViewBitmap() {
-        for (ImageView img : mImageViewList) {
-            if(img!=null) {
-                img.setBackgroundResource(0);
-                img.setImageResource(0);
-            }
+            ft.commit();
         }
     }
 
-    protected Intent intent(Class<?> clz) {
-        Intent intent = new Intent(getActivity(), clz);
-        intent.putExtra("from_activity", getActivity().getComponentName()
-                .getClassName());
-        intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
-        return intent;
+    public boolean isMyHidden(){
+        return mIsHidden;
     }
 
-    public void startActivityClass(Class<?> clz) {
-        startActivity(intent(clz));
-    }
-
-    public void showToastShort(String text) {
-        if (!TextUtils.isEmpty(text) && mActivity != null) {
-            Toast.makeText(mActivity, text, Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    public void showToastLong(String text) {
-        if (!TextUtils.isEmpty(text) && mActivity != null) {
-            Toast.makeText(mActivity, text, Toast.LENGTH_LONG).show();
-        }
-    }
-
-    public void showToastShort(int textId) {
-        if (textId > 0 && mActivity != null) {
-            Toast.makeText(mActivity, textId, Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    public void showToastLong(int textId) {
-        if (textId > 0 && mActivity != null) {
-            Toast.makeText(mActivity, textId, Toast.LENGTH_LONG).show();
-        }
-    }
-
-    /**
-     * 异步请求结束之后是否可以更新ui
-     *
-     * @return
-     */
-    public boolean canUpdateUi() {
-        if (!isAdded() || isRemoving() || isDetached()) {
-            return false;
-        }
-        return true;
-    }
-
-    public boolean onBackPressed() {
-
-        if (getChildFragmentManager().getBackStackEntryCount() > 1) {
-            getChildFragmentManager().popBackStack(
-                    getChildFragmentManager()
-                            .getBackStackEntryAt(
-                                    getChildFragmentManager()
-                                            .getBackStackEntryCount() - 1)
-                            .getId(), FragmentManager.POP_BACK_STACK_INCLUSIVE);
-            return true;
-        }
-
-        return false;
-
-    }
 
     @Override
     public void onDestroyView() {
@@ -233,7 +216,6 @@ public abstract class BaseFragment extends Fragment{
         if(mNoContentView!=null){
             mNoContentView.setOnClickListener(null);
         }
-        recycleImageViewBitmap();
         mImageViewList.clear();
     }
 
@@ -241,24 +223,17 @@ public abstract class BaseFragment extends Fragment{
         OK, NETWOEKERROR, NOCONTENT, LOADING
     }
 
-    private boolean isAdd = false;
-
-    public void setIsAdd(boolean isAdd){
-        this.isAdd = isAdd;
-    }
-
-    /**
-     * 外面不要轻易调用此方法，尽量调用系统原生方法isAdded()
-     * @return
-     */
-    public boolean isAddFix(){
-        return isAdd||isAdded();
-    }
-
     public View getCreateNoContentView() {
         return mNoContentView;
     }
 
-
+    /**
+     * 按返回键触发,前提是SupportActivity的onBackPressed()方法能被调用
+     *
+     * @return false则继续向上传递, true则消费掉该事件
+     */
+    public boolean onMyBackPressed() {
+        return false;
+    }
 
 }
