@@ -33,17 +33,19 @@ public class FirstChildFragment extends BaseFragment{
         }
         btn1 = (Button) findViewById(R.id.button1);
         btn2 = (Button) findViewById(R.id.button2);
-        btn1.setText("直接add创建le"+getFragmentManager().getBackStackEntryCount());
+        btn1.setText("直接add创建le"+mCount);
         btn1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                start(FirstChildFragment.newInstance(++mCount));
+                ++mCount;
+                start(FirstChildFragment.newInstance(mCount));
             }
         });
         btn2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mActivity.replaceLoadRootFragment(getContainerId(),FirstChild2Fragment.newInstance(0),true);
+                ++mCount;
+                mActivity.replaceLoadRootFragment(getContainerId(),FirstChild2Fragment.newInstance(mCount),false);
             }
         });
     }
@@ -75,7 +77,8 @@ public class FirstChildFragment extends BaseFragment{
 
     @Override
     public boolean onMyBackPressed() {
-        pop();
-        return true;
+        return pop();
     }
+
+
 }

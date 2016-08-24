@@ -46,4 +46,9 @@ public class MainActivity extends BaseFragmentActivity implements BaseLazyMainFr
     public void onBackToFirstFragment() {
 
     }
+
+    @Override
+    public void onMyBackPress() {
+        super.onMyBackPress();
+    }
 }
