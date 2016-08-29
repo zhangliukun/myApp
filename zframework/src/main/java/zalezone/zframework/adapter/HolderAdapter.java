@@ -16,6 +16,7 @@ public class HolderAdapter<T> extends AbstractAdapter<T> {
         String commit4;
 
         String commit5;
+        String commit6;
     }
 
 
