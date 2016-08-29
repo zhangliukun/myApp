@@ -30,6 +30,9 @@ public class FirstFragment extends BaseLazyMainFragment{
 
     @Override
     protected void initLazyView(@Nullable Bundle savedInstanceState) {
+        if (savedInstanceState == null){
+
+        }
     }
 
     @Override
@@ -38,11 +41,11 @@ public class FirstFragment extends BaseLazyMainFragment{
             mCount = getArguments().getInt("count");
         }
         btn1 = (Button) findViewById(R.id.button1);
-        btn1.setText(mCount+"");
+        btn1.setText("First");
         btn1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                start(FirstChildFragment.newInstance(++mCount));
+                start(FirstChildFragment.newInstance(1));
             }
         });
     }

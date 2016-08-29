@@ -1,6 +1,7 @@
 package zalezone.zframework.fragment;
 
 import android.app.Activity;
+import android.content.res.TypedArray;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -125,9 +126,47 @@ public abstract class BaseFragment extends Fragment{
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+
+        View view = getView();
+        initFragmentBackground(view);
+        // 防止某种情况 上一个Fragment仍可点击问题
+        if (view != null) {
+            view.setClickable(true);
+        }
+
         initUi(savedInstanceState);
         loadData();
+    }
 
+    protected void initFragmentBackground(View view) {
+        setBackground(view);
+    }
+
+    protected void setBackground(View view) {
+        if (view != null && view.getBackground() == null) {
+            int defaultBg = mActivity.getmDefaultFragmentBackground();
+            if (defaultBg == 0) {
+                int background = getWindowBackground();
+                view.setBackgroundResource(background);
+            } else {
+                view.setBackgroundResource(defaultBg);
+            }
+        }
+    }
+
+    protected int getWindowBackground() {
+        TypedArray a = mActivity.getTheme().obtainStyledAttributes(new int[]{
+                android.R.attr.windowBackground
+        });
+        int background = a.getResourceId(0, 0);
+        a.recycle();
+        return background;
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putBoolean(FraManager.FRAGMENTATION_STATE_SAVE_IS_HIDDEN, isHidden());
     }
 
     protected abstract View getLoadingView();
@@ -158,16 +197,12 @@ public abstract class BaseFragment extends Fragment{
      */
     public abstract int getContainerLayoutId();
 
-    public void loadRootFragment(int containerId, BaseFragment toFragment) {
-        mFraManager.loadRootTransaction(getChildFragmentManager(), containerId, toFragment);
+    public boolean pop(){
+        return mFraManager.back(getFragmentManager());
     }
 
-    public void pop(){
-        mFraManager.back(getFragmentManager());
-    }
-
-    public void popChild(){
-        mFraManager.back(getChildFragmentManager());
+    public boolean popChild(){
+       return mFraManager.back(getChildFragmentManager());
     }
 
     public void replaceLoadRootFragment(int containerId, BaseFragment toFragment, boolean addToBack){

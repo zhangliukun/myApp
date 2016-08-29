@@ -5,6 +5,8 @@ import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
 
+import com.facebook.drawee.backends.pipeline.Fresco;
+
 /**
  * Created by zale on 16/8/10.
  */
@@ -19,6 +21,7 @@ public abstract class BaseApplication extends Application{
     public void onCreate() {
         super.onCreate();
         mAppInstance = this;
+        Fresco.initialize(this);
     }
 
     public abstract void initApp();

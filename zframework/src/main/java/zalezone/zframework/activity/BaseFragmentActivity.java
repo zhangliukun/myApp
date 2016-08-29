@@ -1,9 +1,14 @@
 package zalezone.zframework.activity;
 
 import android.os.Bundle;
+import android.os.Looper;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
+import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.Toast;
 
 import zalezone.zframework.BaseApplication;
 import zalezone.zframework.R;
@@ -13,10 +18,12 @@ import zalezone.zframework.fragment.FraManager;
 /**
  * Created by zale on 16/8/10.
  */
-public abstract class BaseFragmentActivity extends FragmentActivity{
+public abstract class BaseFragmentActivity extends AppCompatActivity{
     private Bundle mSavedState;
 
     private FraManager mFraManager;
+
+    private int mDefaultFragmentBackground = 0;
 
     protected void onCreate(Bundle savedState) {
         super.onCreate(savedState);
@@ -51,9 +58,10 @@ public abstract class BaseFragmentActivity extends FragmentActivity{
     @Override
     public void onBackPressed() {
         BaseFragment activeFragment = mFraManager.getTopActiveFragment(null,getSupportFragmentManager());
-        if (!mFraManager.dispatchBackPressEvent(activeFragment)){
-            this.finish();
+        if (mFraManager.dispatchBackPressEvent(activeFragment)){
+            return;
         }
+        onMyBackPress();
 
     }
 
@@ -87,12 +95,11 @@ public abstract class BaseFragmentActivity extends FragmentActivity{
 
 
 
-
     /**
      * 该方法回调时机为,Activity回退栈内Fragment的数量 小于等于1 时,默认finish Activity
      * 请尽量复写该方法,避免复写onBackPress(),以保证SupportFragment内的onBackPressedSupport()回退事件正常执行
      */
-    public void onBackPressedSupport() {
+    public void onMyBackPress() {
         if (getSupportFragmentManager().getBackStackEntryCount() > 1) {
             pop();
         } else {
@@ -156,4 +163,49 @@ public abstract class BaseFragmentActivity extends FragmentActivity{
 
     }
 
+    public int getmDefaultFragmentBackground() {
+        return mDefaultFragmentBackground;
+    }
+
+    public void setmDefaultFragmentBackground(int mDefaultFragmentBackground) {
+        this.mDefaultFragmentBackground = mDefaultFragmentBackground;
+    }
+
+    public void showToastShort(String text) {
+
+        if(Looper.myLooper()!=Looper.getMainLooper())
+            return;
+
+        if (TextUtils.isEmpty(text) || this == null) {
+            return;
+        }
+        Toast.makeText(this, text, Toast.LENGTH_SHORT).show();
+    }
+
+    public void showToastLong(String text) {
+        if(Looper.myLooper()!=Looper.getMainLooper())
+            return;
+        if (TextUtils.isEmpty(text) || this == null) {
+            return;
+        }
+        Toast.makeText(this, text, Toast.LENGTH_LONG).show();
+    }
+
+    public void showToastShort(int textId) {
+        if(Looper.myLooper()!=Looper.getMainLooper())
+            return;
+        if (textId == 0 || this == null) {
+            return;
+        }
+        Toast.makeText(this, textId, Toast.LENGTH_SHORT).show();
+    }
+
+    public void showToastLong(int textId) {
+        if(Looper.myLooper()!=Looper.getMainLooper())
+            return;
+        if (textId == 0 || this == null) {
+            return;
+        }
+        Toast.makeText(this, textId, Toast.LENGTH_LONG).show();
+    }
 }

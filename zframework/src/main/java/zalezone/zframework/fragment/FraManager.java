@@ -5,9 +5,10 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.widget.Toast;
 
 import java.util.List;
+
+import zalezone.zframework.R;
 
 public class FraManager {
 
@@ -38,7 +39,6 @@ public class FraManager {
         dispatchStartTransaction(fragmentManager,null,to,TYPE_ADD,null);
     }
 
-
     public void dispatchStartTransaction(FragmentManager fragmentManager, BaseFragment from, BaseFragment to,
                                   int type, String name) {
         if (from != null) {
@@ -48,7 +48,7 @@ public class FraManager {
         switch (type) {
             case TYPE_ADD:
             case TYPE_ADD_RESULT:
-                start(fragmentManager,from,to,name);
+                start(fragmentManager,from,to,0,0);
                 break;
         }
     }
@@ -59,6 +59,9 @@ public class FraManager {
         ft.replace(containerId,to,to.getClass().getName());
         if (addToBack){
             ft.addToBackStack(to.getClass().getName());
+        }else {
+            //pop all popbackstack
+            fragmentManager.popBackStackImmediate(0, FragmentManager.POP_BACK_STACK_INCLUSIVE);
         }
         Bundle bundle = to.getArguments();
         bundle.putBoolean(ARG_IS_ROOT,true);
@@ -79,18 +82,25 @@ public class FraManager {
         args.putInt(FRAGMENTATION_ARG_CONTAINER, containerId);
     }
 
-    public void start(FragmentManager fragmentManager, BaseFragment from, BaseFragment to, String name) {
+    public void start(FragmentManager fragmentManager, BaseFragment from, BaseFragment to,int inAnim,int outAnim) {
         String toName = to.getClass().getName();
         FragmentTransaction ft = fragmentManager.beginTransaction();
+        Bundle bundle = to.getArguments();
         if (from == null) {
             ft.add(to.getArguments().getInt(FRAGMENTATION_ARG_CONTAINER), to, toName);
-            Bundle bundle = to.getArguments();
             bundle.putBoolean(ARG_IS_ROOT, true);
         } else {
+            if (inAnim == 0|| outAnim ==0){
+                ft.setCustomAnimations(R.anim.slide_in_right,
+                        0,0,R.anim.slide_out_right);
+            }else if (inAnim == -1 && outAnim == -1){
+                ft.setCustomAnimations(inAnim,outAnim,inAnim,outAnim);
+                bundle.putInt("in_anim",inAnim);
+                bundle.putInt("out_anim",outAnim);
+            }
             ft.add(from.getContainerId(), to, toName);
-            ft.hide(from);
+            //ft.hide(from);
         }
-
         ft.addToBackStack(toName);
         ft.commitAllowingStateLoss();
     }
@@ -108,14 +118,14 @@ public class FraManager {
 //        fragmentManager.beginTransaction().remove(from).commit();
 //    }
 
-    public void back(FragmentManager fragmentManager){
-        if (fragmentManager == null) return;
+    public boolean back(FragmentManager fragmentManager){
+        if (fragmentManager == null) return false;
         int count = fragmentManager.getBackStackEntryCount();
         if (count > 1){
-            String name = fragmentManager.getFragments().get(count-1).getClass().toString();
-            boolean isSuccess = fragmentManager.popBackStackImmediate();
-            Toast.makeText(mActivity,name+isSuccess,Toast.LENGTH_SHORT).show();
+            fragmentManager.popBackStackImmediate();
+            return true;
         }
+        return false;
     }
 
     /**
