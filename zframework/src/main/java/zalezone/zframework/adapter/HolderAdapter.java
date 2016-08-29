@@ -11,5 +11,8 @@ public class HolderAdapter<T> extends AbstractAdapter<T> {
 
     public HolderAdapter(Context context, List<T> listData) {
         super(context, listData);
+        String commit2;
     }
+
+
 }
