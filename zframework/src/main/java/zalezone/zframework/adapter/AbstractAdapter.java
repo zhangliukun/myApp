@@ -24,6 +24,7 @@ public class AbstractAdapter<T> extends BaseAdapter{
     public AbstractAdapter(Context context,List<T> listData) {
         this.mContext = context;
         this.mListData = listData;
+        layoutInflater = layoutInflater.from(context);
     }
 
     public boolean containItem(T item){

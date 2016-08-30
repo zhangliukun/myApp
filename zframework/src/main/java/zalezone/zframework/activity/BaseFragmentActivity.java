@@ -122,25 +122,6 @@ public abstract class BaseFragmentActivity extends AppCompatActivity{
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
     }
 
-    /**
-     * 给activity状态栏赋背景
-     *
-     * @return
-     */
-    public abstract int getStatusBarBgRes();
-    /**
-     * 为了给签名验证用的
-     * object [0] pageNameMd5 包名的MD5
-     * object [1] SigInfo 签名的MD5
-     * object [2] isRelease 是否是发布版本
-     */
-    public abstract Object[] getAppInfo();
-    /**
-     * 获取Intent传过来的参数，用于替代方法getIntent().getExtras() <br>
-     * 用于解决Activity重新启动后，原有的Intent中的参数丢失问题，已做容错处理，可以放心调用
-     *
-     * @return
-     */
     public Bundle getIntentExtras() {
         if (mSavedState == null)
             mSavedState = new Bundle();
