@@ -6,6 +6,10 @@
     <uses-permission android:name="android.permission.ACCESS_MOCK_LOCATION"  tools:ignore ="MockLocation"/>
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS"/>
+
 
     <application
         android:allowBackup="true"
@@ -20,15 +24,23 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-
-        <service android:name="zalezone.aidlstudy.MyService"
+\
+        <service android:name="zalezone.service.ZMediaService"
             android:exported="true"
-            android:process=":zalereomte">
+            android:process=":zaleplayer">
             <intent-filter>
                 <action android:name="com.zalezone.service.REMOTE_SERVICE"/>
             </intent-filter>
 
         </service>
+        
+        <receiver android:name="zalezone.receiver.MusicIntentReceiver">
+            <intent-filter>
+                <action android:name="android.media.AUDIO_BECOMING_NOISY"/>
+            </intent-filter>
+        </receiver>
+
+
 
     </application>
 

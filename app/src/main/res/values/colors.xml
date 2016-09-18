@@ -1,18 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#3F51B5</color>
-    <color name="colorPrimaryDark">#303F9F</color>
-    <color name="colorAccent">#FF4081</color>
-
-    <color name="rainbow_red">#FF0000</color>
-    <color name="rainbow_orange">#FF7f00</color>
-    <color name="rainbow_yellow">#ffff00</color>
-    <color name="rainbow_green">#00ff00</color>
-    <color name="rainbow_young">#00ffff</color>
-    <color name="rainbow_blue">#0000ff</color>
-    <color name="rainbow_purple">#8b00ff</color>
 
     <color name="Indigo_colorPrimaryDark">#303f9f</color>
     <color name="Indigo_colorPrimary">#3f51b5</color>
-    <color name="Indigo_nav_color">#4675FF</color>
+
+
+    <!-- 播放进度条颜色 -->
+    <!-- first -->
+    <!-- second -->
+    <!-- bg -->
+
+    <!-- 录音的波形颜色 -->
+    <color name="recoding_share_setlist_bgcolor">#FCFCFC</color>
+    <color name="list_stroke">#8E8E8E</color>
+    <color name="recording_show">#b0663b</color>
+    <!-- list边框 -->
+    <color name="me_gridview_textcolor">#197584</color>
+    <color name="setting_toast">#4d4d4d</color>
+    <!-- 播放进度条颜色 -->
+    <!-- first -->
+    <color name="playerprogress_1">#ea5420</color>
+    <color name="playerprogress_1_new">#f86442</color>
+    <!-- second -->
+    <color name="playerprogress_2">#ffad7b</color>
+    <color name="playerprogress_2_new">#d9dfe5</color>
+    <!-- bg -->
+    <color name="playerprogress_3">#838383</color>
+    <color name="playerprogress_3_new">#e8eef3</color>
+    <color name="transparent">#00000000</color>
+
+    <color name="guide_bg_color">#BB404040</color>
 </resources>

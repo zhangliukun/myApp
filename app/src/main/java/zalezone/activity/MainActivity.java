@@ -1,14 +1,19 @@
 package zalezone.activity;
 
-import android.content.Context;
+import android.app.Service;
+import android.content.ComponentName;
+import android.content.Intent;
+import android.content.ServiceConnection;
 import android.content.res.Configuration;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.AdapterView;
@@ -16,14 +21,16 @@ import android.widget.ListView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
 
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import zalezone.adapter.MenuItemAdapter;
+import zalezone.aidlstudy.ZPlayerInterface;
 import zalezone.model.menu.MenuItem;
+import zalezone.service.ZMediaService;
 import zalezone.surfaceview.R;
+import zalezone.view.guide.CommonGuideFragment;
 import zalezone.zframework.activity.BaseFragmentActivity;
 
 /**
@@ -49,6 +56,7 @@ public class MainActivity extends BaseFragmentActivity{
     protected void onCreate(Bundle savedState) {
         super.onCreate(savedState);
         setContentView(R.layout.act_main);
+        startPlayerService();
         initUI();
 
     }
@@ -82,7 +90,7 @@ public class MainActivity extends BaseFragmentActivity{
                 new MenuItem("小说"),
                 new MenuItem("小说"),
                 new MenuItem("小说"),
-                new MenuItem("新闻")));
+                new MenuItem("音乐")));
         menuItemAdapter = new MenuItemAdapter(this,mList);
         mDrawerList.addHeaderView(headerView);
         mDrawerList.setAdapter(menuItemAdapter);
@@ -137,6 +145,7 @@ public class MainActivity extends BaseFragmentActivity{
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
             showToastShort(id+"");
+            loadRootFragment(R.id.top_mask,new CommonGuideFragment());
         }
     }
 
@@ -156,8 +165,40 @@ public class MainActivity extends BaseFragmentActivity{
         }
     }
 
+    private void startPlayerService(){
+        Intent intent = new Intent();
+        intent.setAction("com.zalezone.service.REMOTE_SERVICE");
+        intent.setPackage("zalezone.service.ZMediaService");
+        startService(ZMediaService.getIntent(getApplicationContext()));
+        getApplicationContext().bindService(ZMediaService.getIntent(getApplicationContext()),serviceConnection, Service.BIND_AUTO_CREATE);
+    }
+
     @Override
     public void onMyBackPress() {
         super.onMyBackPress();
     }
+
+    private ZPlayerInterface mStub;
+
+    private ServiceConnection serviceConnection = new ServiceConnection() {
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            mStub = ZPlayerInterface.Stub.asInterface(service);
+            Log.i("player_service","service connected");
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+            Log.i("player_service","service disconnected");
+            startPlayerService();
+        }
+    };
+
+    public ZPlayerInterface getPlayerBinder(){
+        if (mStub == null){
+            startPlayerService();
+        }
+        return mStub;
+    }
+
 }
