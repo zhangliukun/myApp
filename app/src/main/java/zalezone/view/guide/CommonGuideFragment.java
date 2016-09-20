@@ -11,16 +11,23 @@ import zalezone.zframework.fragment.BaseFragment;
  */
 public class CommonGuideFragment extends BaseFragment{
 
-    GuideView guideView;
+    private GuideViewLayout guideViewLayout;
 
     @Override
     protected void initUi(Bundle savedInstanceState) {
-        guideView = new GuideView(mActivity);
+        guideViewLayout = (GuideViewLayout) findViewById(R.id.guide_view_layout);
     }
 
     @Override
     protected void loadData() {
-
+        guideViewLayout.addGuideOperation(new GuideModel(400,400,100, GuideMask.TYPE_GUIDE_CIRCLE,R.drawable.guide_download,100,500,40,0));
+        guideViewLayout.addGuideOperation(new GuideModel(800,800,200, GuideMask.TYPE_GUIDE_CIRCLE,R.drawable.guide_square,300,100,40,0));
+        guideViewLayout.startGuide(new GuideViewLayout.OnGuideFinishedListener() {
+            @Override
+            public void guideFinished() {
+                getActivity().onBackPressed();
+            }
+        });
     }
 
     @Override
