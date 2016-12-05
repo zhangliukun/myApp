@@ -8,6 +8,7 @@ import android.content.res.Configuration;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.os.RemoteException;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -26,11 +27,13 @@ import java.util.Arrays;
 import java.util.List;
 
 import zalezone.adapter.MenuItemAdapter;
-import zalezone.aidlstudy.ZPlayerInterface;
+import zalezone.aidlstudy.IZaleInterface;
+import zalezone.aidlstudy.MyService;
+import zalezone.aidlstudy.Zale;
+import zalezone.aidlstudy.ZaleBinder;
 import zalezone.model.menu.MenuItem;
-import zalezone.service.ZMediaService;
 import zalezone.surfaceview.R;
-import zalezone.view.guide.CommonGuideFragment;
+import zalezone.ui.fragment.FirstChildFragment;
 import zalezone.zframework.activity.BaseFragmentActivity;
 
 /**
@@ -65,7 +68,12 @@ public class MainActivity extends BaseFragmentActivity{
         findViews();
         initToolBar();
         initMenu();
+        initMain();
         setStatuBarTranslucentStatus();
+    }
+
+    private void initMain() {
+        loadRootFragment(R.id.base_container, FirstChildFragment.newInstance(0));
     }
 
     private void initHeaderView(){
@@ -145,7 +153,6 @@ public class MainActivity extends BaseFragmentActivity{
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
             showToastShort(id+"");
-            loadRootFragment(R.id.top_mask,new CommonGuideFragment());
         }
     }
 
@@ -168,9 +175,9 @@ public class MainActivity extends BaseFragmentActivity{
     private void startPlayerService(){
         Intent intent = new Intent();
         intent.setAction("com.zalezone.service.REMOTE_SERVICE");
-        intent.setPackage("zalezone.service.ZMediaService");
-        startService(ZMediaService.getIntent(getApplicationContext()));
-        getApplicationContext().bindService(ZMediaService.getIntent(getApplicationContext()),serviceConnection, Service.BIND_AUTO_CREATE);
+        intent.setPackage("zalezone.aidlstudy.MyService");
+        startService(MyService.getIntent(getApplicationContext()));
+        getApplicationContext().bindService(MyService.getIntent(getApplicationContext()),serviceConnection, Service.BIND_AUTO_CREATE);
     }
 
     @Override
@@ -178,13 +185,26 @@ public class MainActivity extends BaseFragmentActivity{
         super.onMyBackPress();
     }
 
-    private ZPlayerInterface mStub;
+    private IZaleInterface mStub;
 
     private ServiceConnection serviceConnection = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
-            mStub = ZPlayerInterface.Stub.asInterface(service);
+            mStub = ZaleBinder.asInterface(service);
             Log.i("player_service","service connected");
+            try {
+                mStub.sayHello("hello");
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
+            Zale zale = new Zale();
+            zale.setName("zale");
+            zale.setAge(20);
+            try {
+                mStub.introduceMe(zale);
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
         }
 
         @Override
@@ -194,7 +214,7 @@ public class MainActivity extends BaseFragmentActivity{
         }
     };
 
-    public ZPlayerInterface getPlayerBinder(){
+    public IZaleInterface getPlayerBinder(){
         if (mStub == null){
             startPlayerService();
         }

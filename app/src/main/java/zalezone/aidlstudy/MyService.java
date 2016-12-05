@@ -8,8 +8,6 @@ import android.os.RemoteCallbackList;
 import android.os.RemoteException;
 import android.util.Log;
 
-import zalezone.model.Product;
-
 
 /**
  * Created by zale on 16/7/25.
@@ -20,35 +18,47 @@ public class MyService extends Service{
     private RemoteCallbackList<ICallback> mRemoteCallbackList = new RemoteCallbackList<>();
 
 
-    private ITaskAidiInterface.Stub mBinder = new ITaskAidiInterface.Stub() {
+//    private ITaskAidiInterface.Stub mBinder = new ITaskAidiInterface.Stub() {
+//        @Override
+//        public int add(int arg1, int arg2) throws RemoteException {
+//            return 0;
+//        }
+//
+//        @Override
+//        public String getName() throws RemoteException {
+//            return null;
+//        }
+//
+//        @Override
+//        public Product getProduct() throws RemoteException {
+//
+//            return null;
+//        }
+//
+//        @Override
+//        public void registerCallback(ICallback cb) throws RemoteException {
+//            if (cb!=null){
+//                mRemoteCallbackList.register(cb);
+//            }
+//        }
+//
+//        @Override
+//        public void unregisterCallback(ICallback cb) throws RemoteException {
+//            if (cb!=null){
+//                mRemoteCallbackList.unregister(cb);
+//            }
+//        }
+//    };
+    private ZaleBinder mBinder = new ZaleBinder() {
         @Override
-        public int add(int arg1, int arg2) throws RemoteException {
-            return 0;
+        public void sayHello(String word) throws RemoteException {
+            Log.i("zaleTag",word+"");
         }
 
         @Override
-        public String getName() throws RemoteException {
-            return null;
-        }
-
-        @Override
-        public Product getProduct() throws RemoteException {
-
-            return null;
-        }
-
-        @Override
-        public void registerCallback(ICallback cb) throws RemoteException {
-            if (cb!=null){
-                mRemoteCallbackList.register(cb);
-            }
-        }
-
-        @Override
-        public void unregisterCallback(ICallback cb) throws RemoteException {
-            if (cb!=null){
-                mRemoteCallbackList.unregister(cb);
-            }
+        public String introduceMe(Zale info) throws RemoteException {
+            Log.i("zaleTag,intro",info.getName());
+            return info.getName();
         }
     };
 

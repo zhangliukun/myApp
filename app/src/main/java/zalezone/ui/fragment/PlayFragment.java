@@ -5,7 +5,6 @@ import android.view.View;
 import android.widget.ImageButton;
 import android.widget.SeekBar;
 
-import zalezone.activity.MainActivity;
 import zalezone.aidlstudy.ZPlayerInterface;
 import zalezone.surfaceview.R;
 import zalezone.zframework.fragment.BaseFragment;
@@ -29,9 +28,9 @@ public class PlayFragment extends BaseFragment{
 
     @Override
     protected void loadData() {
-        if (mActivity!=null&&mActivity instanceof MainActivity){
-            mStub = ((MainActivity) mActivity).getPlayerBinder();
-        }
+//        if (mActivity!=null&&mActivity instanceof MainActivity){
+//            mStub = ((MainActivity) mActivity).getPlayerBinder();
+//        }
     }
 
     @Override

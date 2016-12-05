@@ -15,4 +15,10 @@
         android:text="直接replace Id"
         android:id="@+id/button2" />
 
+
+    <EditText
+        android:id="@+id/emoj_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
 </LinearLayout>

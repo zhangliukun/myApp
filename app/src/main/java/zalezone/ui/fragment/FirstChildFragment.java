@@ -1,13 +1,15 @@
 package zalezone.ui.fragment;
 
 import android.os.Bundle;
-import android.support.annotation.Nullable;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 
 import zalezone.surfaceview.R;
 import zalezone.zframework.fragment.BaseFragment;
-import zalezone.zframework.fragment.BaseLazyMainFragment;
 
 /**
  * Created by zale on 16/8/17.
@@ -17,6 +19,7 @@ public class FirstChildFragment extends BaseFragment{
     private Button btn1;
     private Button btn2;
     private int mCount;
+    private EditText emojText;
 
     public static FirstChildFragment newInstance(int count){
         Bundle args = new Bundle();
@@ -48,7 +51,46 @@ public class FirstChildFragment extends BaseFragment{
                 mActivity.replaceLoadRootFragment(getContainerId(),FirstChild2Fragment.newInstance(mCount),false);
             }
         });
+
+        emojText = (EditText) findViewById(R.id.emoj_text);
+        emojText.addTextChangedListener(textWatcher);
     }
+
+    private TextWatcher textWatcher = new TextWatcher() {
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+        }
+
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+        }
+
+        @Override
+        public void afterTextChanged(Editable s) {
+            Log.i("edittext",unicode2String(s.toString()));
+        }
+    };
+
+    public static String unicode2String(String unicode) {
+
+        StringBuffer string = new StringBuffer();
+
+        String[] hex = unicode.split("\\\\u");
+
+        for (int i = 1; i < hex.length; i++) {
+
+            // 转换出每一个代码点
+            int data = Integer.parseInt(hex[i], 16);
+
+            // 追加成string
+            string.append((char) data);
+        }
+
+        return string.toString();
+    }
+
 
     @Override
     protected void loadData() {

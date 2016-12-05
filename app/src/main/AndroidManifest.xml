@@ -24,8 +24,8 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-\
-        <service android:name="zalezone.service.ZMediaService"
+
+        <service android:name="zalezone.aidlstudy.MyService"
             android:exported="true"
             android:process=":zaleplayer">
             <intent-filter>
